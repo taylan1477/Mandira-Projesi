@@ -18,8 +18,26 @@ class Animal:
         else:
             raise ValueError("Geçersiz hayvan türü. 'inek', 'koyun' veya 'keçi' olmalıdır.")
 
+    def feed(self):
+        raise NotImplementedError("Bu metod alt sınıflar tarafından uygulanmalıdır.")
+
     def __str__(self):
         return f"{self.animal_type} (ID: {self.animal_id}, Ağırlık: {self.weight} kg, Yaş: {self.age} yıl, Süt: {self.milk_production} litre)"
+
+
+class Cow(Animal):
+    def feed(self):
+        return f"{self.animal_id} numaralı ineğe yem verildi"
+
+
+class Goat(Animal):
+    def feed(self):
+        return f"{self.animal_id} numaralı keçiye yem verildi"
+
+
+class Sheep(Animal):
+    def feed(self):
+        return f"{self.animal_id} numaralı koyuna yem verildi"
 
 
 class DairyProduct:
@@ -43,13 +61,28 @@ class DairyFarm:
 
     def add_animal(self, animal_id, animal_type, weight, age):
         print("Bankadaki toplam para: ", self.total_cash)
-        new_animal = Animal(animal_id, animal_type, weight, age)
+
+        # Benzersizlik kontrolü
+        if any(animal.animal_id == animal_id for animal in self.animals):
+            print(f"ID: {animal_id} ile zaten bir hayvan mevcut.")
+            return
+
+        if animal_type == "inek":
+            new_animal = Cow(animal_id, animal_type, weight, age)
+        elif animal_type == "koyun":
+            new_animal = Sheep(animal_id, animal_type, weight, age)
+        elif animal_type == "keçi":
+            new_animal = Goat(animal_id, animal_type, weight, age)
+        else:
+            print("Geçersiz hayvan türü.")
+            return
+
         if new_animal.price <= self.total_cash:
             self.animals.append(new_animal)
             print(f"{animal_type} eklendi. (ID: {animal_id})")
             self.total_cash -= new_animal.price
         else:
-            print("Bu hayvanı alacak paran yok: ",self.total_cash,"TL")
+            print("Bu hayvanı alacak paran yok: ", self.total_cash, "TL")
 
     def remove_animal(self, animal_id):
         for animal in self.animals:
@@ -112,6 +145,13 @@ class DairyFarm:
         for product, details in self.products.items():
             print(f"- {product}: {details['stock']} adet (Gerekli süt: {details['milk_needed']} litre)")
 
+    def feed_animals(self):
+        if not self.animals:
+            print("Hayvan yok.")
+            return
+        for animal in self.animals:
+            print(animal.feed())
+
 
 def main():
     farm = DairyFarm()
@@ -124,20 +164,17 @@ def main():
         print("5. Tüm Süt Ürünlerini Sat")
         print("6. Hayvanları Göster")
         print("7. Süt Ürünlerini Göster")
-        print("8. Çıkış")
+        print("8. Hayvanları Besle")  # Yeni seçenek
+        print("9. Çıkış")
 
-        choice = input("Seçiminizi yapın (1-8): ")
+        choice = input("Seçiminizi yapın (1-9): ")
 
         if choice == "1":
-            print("Bankadaki toplam para: ")
             animal_id = input("Hayvan numarası: ")
             animal_type = input("Hayvan türü (inek/keçi/koyun): ")
             weight = float(input("Hayvanın kilosu (kg): "))
             age = int(input("Hayvanın yaşı (yıl): "))
-            try:
-                farm.add_animal(animal_id, animal_type, weight, age)
-            except ValueError as e:
-                print(e)
+            farm.add_animal(animal_id, animal_type, weight, age)
 
         elif choice == "2":
             animal_id = input("Silinecek hayvan numarası: ")
@@ -161,6 +198,9 @@ def main():
             farm.show_products()
 
         elif choice == "8":
+            farm.feed_animals()  # Hayvanları besleme işlemi
+
+        elif choice == "9":
             print("Çıkılıyor...")
             break
 
