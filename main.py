@@ -7,13 +7,13 @@ class Animal:
 
         # Hayvan türüne göre süt üretimi ve fiyat belirleniyor
         if animal_type == "inek":
-            self.milk_production = 2  # İnek günde 2 litre süt verir
+            self.milk_production = 4  # İnek günde 2 litre süt verir
             self.price = 800
         elif animal_type == "koyun":
-            self.milk_production = 1  # Koyun günde 1 litre süt verir
+            self.milk_production = 2  # Koyun günde 1 litre süt verir
             self.price = 400
         elif animal_type == "keçi":
-            self.milk_production = 1  # Keçi günde 1 litre süt verir
+            self.milk_production = 3  # Keçi günde 1 litre süt verir
             self.price = 600
         else:
             raise ValueError("Geçersiz hayvan türü. 'inek', 'koyun' veya 'keçi' olmalıdır.")
@@ -27,23 +27,24 @@ class Animal:
 
 class Cow(Animal):
     def feed(self):
-        return f"{self.animal_id} numaralı ineğe yem verildi"
+        return f"{self.animal_id} numaralı ineğe saman verildi"
 
 
 class Goat(Animal):
     def feed(self):
-        return f"{self.animal_id} numaralı keçiye yem verildi"
+        return f"{self.animal_id} numaralı keçiye arpa verildi"
 
 
 class Sheep(Animal):
     def feed(self):
-        return f"{self.animal_id} numaralı koyuna yem verildi"
+        return f"{self.animal_id} numaralı koyuna ot verildi"
 
 
 class DairyProduct:
-    def __init__(self, product_name, milk_needed):
+    def __init__(self, product_name, milk_needed, product_price):
         self.product_name = product_name  # Ürün adı
         self.milk_needed = milk_needed  # Üretim için gereken süt miktarı (litre)
+        self.product_price = product_price
 
 
 class DairyFarm:
@@ -52,7 +53,7 @@ class DairyFarm:
         self.animals = []
         self.products = {
             "ayran": {"milk_needed": 3, "stock": 0},
-            "kefir": {"milk_needed": 3, "stock": 0},
+            "kefir": {"milk_needed": 3, "stock": 0},        # !!!!!!  BURAYA SATIŞ FİYATLARI EKLENECEK   !!!!!!!
             "peynir": {"milk_needed": 5, "stock": 0},
             "paket süt": {"milk_needed": 2, "stock": 0}
         }
@@ -60,7 +61,6 @@ class DairyFarm:
         self.total_cash = 1200
 
     def add_animal(self, animal_id, animal_type, weight, age):
-        print("Bankadaki toplam para: ", self.total_cash)
 
         # Benzersizlik kontrolü
         if any(animal.animal_id == animal_id for animal in self.animals):
@@ -108,7 +108,7 @@ class DairyFarm:
         else:
             print(f"{product_name} üretmek için yeterli süt yok.")
 
-    def sell_product(self, product_name):
+    def sell_product(self, product_name):                  # SATIŞ YAPTIKÇA PARA BURADA GÜNCELLENECEK !!!!!!!!
         if product_name not in self.products:
             print(f"{product_name} bulunamadı.")
             return
@@ -152,11 +152,14 @@ class DairyFarm:
         for animal in self.animals:
             print(animal.feed())
 
+    # GÜN METODU EKLENCEK !!!!!!!!!!!!!!!!!
+
 
 def main():
     farm = DairyFarm()
 
     while True:
+        print("Bankadaki toplam para: ", farm.total_cash)
         print("\n1. Hayvan Ekle")
         print("2. Hayvan Sil")
         print("3. Süt Ürünü Üret")
