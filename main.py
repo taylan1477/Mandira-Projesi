@@ -117,7 +117,7 @@ class DairyFarm:
             self.products[product_name]["stock"] -= 1
             print(f"{product_name} satıldı. Kalan stok: {self.products[product_name]['stock']}")
         else:
-            print(f"{product_name} için yeterli stok yok.")
+            print(f"{product_name} için yeterli stok yok.") #.
 
     def sell_all_products(self):
         print("Tüm süt ürünleri satılıyor...")
