@@ -159,8 +159,8 @@ def main():
     farm = DairyFarm()
 
     while True:
-        print("Bankadaki toplam para: ", farm.total_cash)
-        print("\n1. Hayvan Ekle")
+        print("\nBankadaki toplam para: ", farm.total_cash)
+        print("1. Hayvan Ekle")
         print("2. Hayvan Sil")
         print("3. Süt Ürünü Üret")
         print("4. Süt Ürünü Sat")
