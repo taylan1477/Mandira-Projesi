@@ -57,7 +57,6 @@ class DairyFarm:
             "peynir": {"milk_needed": 5, "stock": 0},
             "paket süt": {"milk_needed": 2, "stock": 0}
         }
-        self.used_milk = 0
         self.total_cash = 1200
 
     def add_animal(self, animal_id, animal_type, weight, age):
@@ -108,7 +107,7 @@ class DairyFarm:
         else:
             print(f"{product_name} üretmek için yeterli süt yok.")
 
-    def sell_product(self, product_name):                  # SATIŞ YAPTIKÇA PARA BURADA GÜNCELLENECEK !!!!!!!!
+    def sell_product(self, product_name):                        # SATIŞ YAPTIKÇA PARA BURADA GÜNCELLENECEK !!!!!!!!
         if product_name not in self.products:
             print(f"{product_name} bulunamadı.")
             return
@@ -129,16 +128,19 @@ class DairyFarm:
             else:
                 print(f"{product} için yeterli stok yok.")
 
+    @staticmethod
+    def calculate_total_milk(animals):
+        return sum(animal.milk_production for animal in animals)
+
     def show_animals(self):
-        total_milk = 0
         if not self.animals:
             print("Hayvan yok.")
             return
         print("Mandıradaki hayvanlar:")
         for animal in self.animals:
             print(f"- {animal}")
-            total_milk = sum(animal.milk_production for animal in self.animals)
-        print("Günde üretilen toplam süt: ", total_milk)
+        total_milk = DairyFarm.calculate_total_milk(self.animals)
+        print("Toplam süt üretimi:", total_milk)
 
     def show_products(self):
         print("Süt Ürünleri Stok Durumu:")
