@@ -58,6 +58,7 @@ class DairyFarm:
             "paket süt": {"milk_needed": 2, "stock": 0, "price": 100}
         }
         self.total_cash = 1200
+        self.total_milk = DairyFarm.calculate_total_milk(self.animals)
         self.used_milk = 0
 
     def add_animal(self, animal_id, animal_type, weight, age):
@@ -82,13 +83,14 @@ class DairyFarm:
             print(f"{animal_type} eklendi. (ID: {animal_id})")
             self.total_cash -= new_animal.price
         else:
-            print("Bu hayvanı alacak paran yok: ", self.total_cash, "TL")
+            print("Bu hayvanı alacak paran yok: ", new_animal.price, "TL")
 
     def remove_animal(self, animal_id):
         for animal in self.animals:
             if animal.animal_id == animal_id:
                 self.animals.remove(animal)
-                print(f"{animal.animal_type} (ID: {animal_id}) silindi.")
+                self.total_cash += animal.price
+                print(f"{animal.animal_type} (ID: {animal_id}) satıldı.")
                 return
         print(f"ID: {animal_id} olan hayvan bulunamadı.")
 
@@ -98,9 +100,9 @@ class DairyFarm:
             return
 
         milk_needed = self.products[product_name]["milk_needed"]
-        total_milk = sum(animal.milk_production for animal in self.animals) - self.used_milk
+        self.total_milk = sum(animal.milk_production for animal in self.animals) - self.used_milk
 
-        if total_milk >= milk_needed:
+        if self.total_milk >= milk_needed:
             # Ürün üretildi ve stok güncellenecek
             self.products[product_name]["stock"] += 1
             print(f"{product_name} üretildi ve stok güncellendi.")
@@ -159,23 +161,40 @@ class DairyFarm:
 
     # GÜN METODU EKLENCEK !!!!!!!!!!!!!!!!!
 
+    def skip_day(self):
+        print("\nBir gün geçti...")
+
+        # Süt miktarlarını sıfırlayıp yeniden hesaplıyoruz
+        self.used_milk = 0
+        print("Hayvanlar yeniden süt üretti.")
+
+        # Günlük hayvan süt üretimlerini raporluyoruz
+        for animal in self.animals:
+            print(f"{animal.animal_id} numaralı {animal.animal_type} günlük {animal.milk_production} litre süt üretti.")
+
+        # Toplam süt miktarını gün sonunda raporluyoruz
+        self.total_milk += sum(animal.milk_production for animal in self.animals)
+        print(f"Gün sonunda toplam süt miktarı: {self.total_milk} litre")
+
 
 def main():
     farm = DairyFarm()
 
     while True:
         print("\nBankadaki toplam para: ", farm.total_cash)
-        print("1. Hayvan Ekle")
-        print("2. Hayvan Sil")
+        print("Depomuzdaki toplam süt: ", farm.total_milk)
+        print("\n1. Hayvan Satın Al")
+        print("2. Hayvan Sat")
         print("3. Süt Ürünü Üret")
         print("4. Süt Ürünü Sat")
         print("5. Tüm Süt Ürünlerini Sat")
         print("6. Hayvanları Göster")
         print("7. Süt Ürünlerini Göster")
-        print("8. Hayvanları Besle")  # Yeni seçenek
-        print("9. Çıkış")
+        print("8. Hayvanları Besle")
+        print("9. Günü Bitir")
+        print("10. Çıkış")
 
-        choice = input("Seçiminizi yapın (1-9): ")
+        choice = input("Seçiminizi yapın (1-10): ")
 
         if choice == "1":
             animal_id = input("Hayvan numarası: ")
@@ -206,9 +225,12 @@ def main():
             farm.show_products()
 
         elif choice == "8":
-            farm.feed_animals()  # Hayvanları besleme işlemi
+            farm.feed_animals()
 
         elif choice == "9":
+            farm.skip_day()
+
+        elif choice == "10":
             print("Çıkılıyor...")
             break
 
