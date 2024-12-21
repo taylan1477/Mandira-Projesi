@@ -22,7 +22,7 @@ class Animal:
         raise NotImplementedError("Bu metod alt sınıflar tarafından uygulanmalıdır.")
 
     def __str__(self):
-        return f"{self.animal_type} (ID: {self.animal_id}, Ağırlık: {self.weight} kg, Yaş: {self.age} yıl, Süt: {self.milk_production} litre)"
+        return f"{self.animal_type} (ID: {self.animal_id}, Ağırlık: {self.weight} kg, Yaş: {self.age} yıl, Süt: {self.milk_production} litre) "
 
 
 class Cow(Animal):
@@ -58,6 +58,7 @@ class DairyFarm:
             "paket süt": {"milk_needed": 2, "stock": 0}
         }
         self.total_cash = 1200
+        self.used_milk = 0
 
     def add_animal(self, animal_id, animal_type, weight, age):
 
@@ -116,7 +117,7 @@ class DairyFarm:
             self.products[product_name]["stock"] -= 1
             print(f"{product_name} satıldı. Kalan stok: {self.products[product_name]['stock']}")
         else:
-            print(f"{product_name} için yeterli stok yok.") #.
+            print(f"{product_name} için yeterli stok yok.")
 
     def sell_all_products(self):
         print("Tüm süt ürünleri satılıyor...")
