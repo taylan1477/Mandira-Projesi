@@ -7,13 +7,13 @@ class Animal:
 
         # Hayvan türüne göre süt üretimi ve fiyat belirleniyor
         if animal_type == "inek":
-            self.milk_production = 4  # İnek günde 2 litre süt verir
+            self.milk_production = 4  # İnek günde 4 litre süt verir
             self.price = 800
         elif animal_type == "koyun":
-            self.milk_production = 2  # Koyun günde 1 litre süt verir
+            self.milk_production = 2  # Koyun günde 2 litre süt verir
             self.price = 400
         elif animal_type == "keçi":
-            self.milk_production = 3  # Keçi günde 1 litre süt verir
+            self.milk_production = 3  # Keçi günde 3 litre süt verir
             self.price = 600
         else:
             raise ValueError("Geçersiz hayvan türü. 'inek', 'koyun' veya 'keçi' olmalıdır.")
@@ -52,10 +52,10 @@ class DairyFarm:
     def __init__(self):
         self.animals = []
         self.products = {
-            "ayran": {"milk_needed": 3, "stock": 0},
-            "kefir": {"milk_needed": 3, "stock": 0},        # !!!!!!  BURAYA SATIŞ FİYATLARI EKLENECEK   !!!!!!!
-            "peynir": {"milk_needed": 5, "stock": 0},
-            "paket süt": {"milk_needed": 2, "stock": 0}
+            "ayran": {"milk_needed": 3, "stock": 0, "price": 150},
+            "kefir": {"milk_needed": 4, "stock": 0, "price": 200},
+            "peynir": {"milk_needed": 5, "stock": 0, "price": 250},
+            "paket süt": {"milk_needed": 2, "stock": 0, "price": 100}
         }
         self.total_cash = 1200
         self.used_milk = 0
@@ -108,13 +108,14 @@ class DairyFarm:
         else:
             print(f"{product_name} üretmek için yeterli süt yok.")
 
-    def sell_product(self, product_name):                        # SATIŞ YAPTIKÇA PARA BURADA GÜNCELLENECEK !!!!!!!!
+    def sell_product(self, product_name):
         if product_name not in self.products:
             print(f"{product_name} bulunamadı.")
             return
 
         if self.products[product_name]["stock"] > 0:
             self.products[product_name]["stock"] -= 1
+            self.total_cash += self.products[product_name]["price"]
             print(f"{product_name} satıldı. Kalan stok: {self.products[product_name]['stock']}")
         else:
             print(f"{product_name} için yeterli stok yok.")
@@ -124,6 +125,7 @@ class DairyFarm:
         for product in self.products.keys():
             stock = self.products[product]["stock"]
             if stock > 0:
+                self.total_cash += self.products[product]["price"] * stock
                 self.products[product]["stock"] = 0
                 print(f"{product} satıldı. Kalan stok: 0")
             else:
