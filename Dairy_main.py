@@ -99,7 +99,7 @@ class DairyFarm:
             print(f"{product_name} bulunamadı.")
             return
 
-        milk_needed = self.products[product_name]["milk_needed"]                                     ## HATA BURADA
+        milk_needed = self.products[product_name]["milk_needed"]
 
         if self.daily_milk >= milk_needed:
             # Ürün üretildi ve stok güncellenecek
