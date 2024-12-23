@@ -2,8 +2,8 @@ class Animal:
     def __init__(self, animal_id, animal_type, weight, age):
         self.animal_id = animal_id  # Hayvan numarası
         self.animal_type = animal_type  # 'inek', 'keçi', 'koyun'
-        self.weight = weight  # Hayvanın kilosu (kg)
-        self.age = age  # Hayvanın yaşı (yıl)
+        self.__weight = weight  # Hayvanın kilosu (kg)
+        self.__age = age  # Hayvanın yaşı (yıl)
 
         # Hayvan türüne göre süt üretimi ve fiyat belirleniyor
         if animal_type == "inek":
@@ -22,7 +22,7 @@ class Animal:
         raise NotImplementedError("Bu metod alt sınıflar tarafından uygulanmalıdır.")
 
     def __str__(self):
-        return f"{self.animal_type} (ID: {self.animal_id}, Ağırlık: {self.weight} kg, Yaş: {self.age} yıl, Süt: {self.milk_production} litre) "
+        return f"{self.animal_type} (ID: {self.animal_id}, Ağırlık: {self.__weight} kg, Yaş: {self.__age} yıl, Süt: {self.milk_production} litre) "
 
 
 class Cow(Animal):
@@ -58,7 +58,7 @@ class DairyFarm:
             "paket süt": {"milk_needed": 2, "stock": 0, "price": 100}
         }
         self.total_cash = 1200
-        self.total_milk = DairyFarm.calculate_total_milk(self.animals)
+        self.daily_milk = DairyFarm.calculate_total_milk(self.animals)
         self.used_milk = 0
 
     def add_animal(self, animal_id, animal_type, weight, age):
@@ -99,14 +99,13 @@ class DairyFarm:
             print(f"{product_name} bulunamadı.")
             return
 
-        milk_needed = self.products[product_name]["milk_needed"]
-        self.total_milk = sum(animal.milk_production for animal in self.animals) - self.used_milk
+        milk_needed = self.products[product_name]["milk_needed"]                                     ## HATA BURADA
 
-        if self.total_milk >= milk_needed:
+        if self.daily_milk >= milk_needed:
             # Ürün üretildi ve stok güncellenecek
             self.products[product_name]["stock"] += 1
             print(f"{product_name} üretildi ve stok güncellendi.")
-            self.used_milk += milk_needed
+            self.daily_milk = self.daily_milk - milk_needed
         else:
             print(f"{product_name} üretmek için yeterli süt yok.")
 
@@ -173,8 +172,8 @@ class DairyFarm:
             print(f"{animal.animal_id} numaralı {animal.animal_type} günlük {animal.milk_production} litre süt üretti.")
 
         # Toplam süt miktarını gün sonunda raporluyoruz
-        self.total_milk += sum(animal.milk_production for animal in self.animals)
-        print(f"Gün sonunda toplam süt miktarı: {self.total_milk} litre")
+        self.daily_milk += sum(animal.milk_production for animal in self.animals)
+        print(f"Gün sonunda toplam süt miktarı: {self.daily_milk} litre")
 
 
 def main():
@@ -182,7 +181,7 @@ def main():
 
     while True:
         print("\nBankadaki toplam para: ", farm.total_cash)
-        print("Depomuzdaki toplam süt: ", farm.total_milk)
+        print("Depomuzdaki toplam süt: ", farm.daily_milk)
         print("\n1. Hayvan Satın Al")
         print("2. Hayvan Sat")
         print("3. Süt Ürünü Üret")
@@ -231,11 +230,11 @@ def main():
             farm.skip_day()
 
         elif choice == "10":
-            print("Çıkılıyor...")
+            print("Programdan çıkılıyor...")
             break
 
         else:
-            print("Geçersiz seçim. Lütfen tekrar deneyin.")
+            print("Geçersiz seçim. Lütfen 1-10 arasında bir değer girin.")
 
 
 if __name__ == "__main__":
